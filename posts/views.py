@@ -98,3 +98,29 @@ def comment_delete(request, post_pk, comment_pk):
     if request.method == 'POST':
         comment.delete()
     return redirect('posts:list')
+    
+@login_required
+def like(request, post_pk):
+    post = get_object_or_404(Post, pk=post_pk)
+    # 이미 해당 유저가 like_users 에 존재하면 해당 유저를 삭제
+    
+    
+    
+    #1번 방식
+    if request.user in post.like_users.all():
+        post.like_users.remove(request.user)
+    
+    # 없으면 추가(좋아요)
+    else:
+        post.like_users.add(request.user)
+    return redirect('posts:list')
+    
+    
+    # # 2번 방식
+    # user = request.user
+    # if post.like_users.filter(pk=user.pk).exists():
+    #     post.like_users.remove(user)
+    # else:
+    #     post.like_users.add(user)
+    # return redirect('posts:list')
+    
