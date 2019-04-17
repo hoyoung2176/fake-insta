@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
-from .forms import UserCustomCreationForm, UserCustomChangeForm
+from .forms import UserCustomCreationForm, UserCustomChangeForm, ProfileForm
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
+from .models import Profile
 
 
 # Create your views here.
@@ -19,6 +20,7 @@ def signup(request):
         form = UserCustomCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            Profile.objects.create(user=user)
             auth_login(request, user)
             return redirect('posts:list')
     else:
@@ -97,3 +99,17 @@ def password(request):
     }
     return render(request, 'accounts/password.html', context)
     
+@login_required
+def profile_update(request):
+    if request.method == 'POST':
+        profile_form = ProfileForm(request.POST, instance=request.user.profile)
+        if profile_form.is_valid():
+            profile_form.save()
+            return redirect('people', request.user.username)
+    
+    else:
+        profile_form = ProfileForm(instance = request.user.profile)
+    context = {
+        'profile_form':profile_form
+    }
+    return render(request, 'accounts/profile_update.html', context)
