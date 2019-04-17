@@ -11,6 +11,7 @@ from django.db.models import Q
 
 
 # Create your views here.
+@login_required
 def list(request):
     # posts = get_list_or_404(Post.objects.order_by('-pk'))
     # posts = Post.objects.filter(user__in=request.user.followings.all()).order_by('-pk')
