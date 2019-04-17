@@ -4,7 +4,7 @@ from django import forms
 from .models import Profile
 
 class UserCustomCreationForm(UserCreationForm):
-    class Meta:
+    class Meta(UserCreationForm.Meta):      # Meta 클래스도 상속받을수 있다.
         model = get_user_model()
         fields = ['username', 'email',]
     

@@ -113,3 +113,15 @@ def profile_update(request):
         'profile_form':profile_form
     }
     return render(request, 'accounts/profile_update.html', context)
+    
+@login_required
+def follow(request, user_pk):
+    people = get_object_or_404(get_user_model(), pk=user_pk)
+    # people이 팔로우하고 있는 모든 유저의 현재 접속 유저가 있다면, 언팔로우
+    if request.user in people.followers.all():
+        people.followers.remove(request.user)
+        
+    #아니면 팔로우 
+    else:
+        people.followers.add(request.user)
+    return redirect('people', people.username)
