@@ -13,4 +13,3 @@ class Profile(models.Model):
         
 class User(AbstractUser):
     followers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="followings")
-    
